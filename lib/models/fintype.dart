@@ -1,0 +1,4 @@
+enum FinType {
+  Free,
+  Paid
+}
