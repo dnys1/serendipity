@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:meta/meta.dart';
+
 import '../models/models.dart';
 
 /// Mock activities for demo-ing the Serendipity concept.
@@ -46,4 +50,17 @@ class MockActivities {
       finType: [FinType.Free, FinType.Paid],
     ),
   ];
+
+  /// Selects a random activity given a certain mood and financial type.
+  static Activity selectRandomActivity({
+    @required Mood mood,
+    @required FinType finType,
+  }) {
+    List<Activity> availableActivities = activities.where((Activity test) {
+      return test.finType.contains(finType) && test.moods.contains(mood);
+    }).toList();
+
+    return availableActivities
+        .elementAt(Random().nextInt(availableActivities.length));
+  }
 }
