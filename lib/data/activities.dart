@@ -43,6 +43,20 @@ class MockActivities {
       finType: [FinType.Free, FinType.Any],
     ),
     Activity(
+      description: 'Restaurant',
+      cta: 'Go try a new restaurant!',
+      searchTerm: 'restaurant',
+      moods: [Mood.Hungry],
+      finType: [FinType.Paid, FinType.Any],
+    ),
+    Activity(
+      description: 'Soup Kitchen',
+      cta: 'Go volunteer at a soup kitchen!',
+      searchTerm: 'soup kitchen',
+      moods: [Mood.Hungry],
+      finType: [FinType.Free, FinType.Any],
+    ),
+    Activity(
       description: 'Random',
       cta: 'Go drive somewhere new!',
       searchTerm: 'tourist attractions',

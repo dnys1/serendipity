@@ -79,6 +79,7 @@ class _FeedScreenState extends State<FeedScreen> {
           Widget child;
           if (snapshot.hasData) {
             child = ListView(
+              addAutomaticKeepAlives: true,
               children:
                   (_pendingPost == null ? <Widget>[] : <Widget>[_pendingPost])
                     ..addAll(_feed.map((post) => Padding(

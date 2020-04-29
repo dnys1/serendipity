@@ -119,7 +119,10 @@ class _AddScreenState extends State<AddScreen> {
                 child: PlaceCard(place: state.place),
               );
             } else if (state is PlacesFailure) {
-              return Text(state.message);
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(state.message),
+              );
             } else {
               throw StateError('Unknown PlacesBloc state: $state');
             }
