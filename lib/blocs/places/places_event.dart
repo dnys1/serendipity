@@ -25,3 +25,5 @@ class PlacesRequested extends PlacesEvent {
     return 'PlacesRequested { mood: $mood, finType: $finType }';
   }
 }
+
+class PlacesCleared extends PlacesEvent {}

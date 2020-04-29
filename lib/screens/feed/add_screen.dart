@@ -158,7 +158,10 @@ class _AddScreenState extends State<AddScreen> {
               textColor: Colors.white,
               onPressed: _currPlace == null
                   ? null
-                  : () => Navigator.of(context).pop(_currPlace),
+                  : () {
+                    BlocProvider.of<PlacesBloc>(context).add(PlacesCleared());
+                    Navigator.of(context).pop(_currPlace);
+                  },
             ),
           ],
         ),

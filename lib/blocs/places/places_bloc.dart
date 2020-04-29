@@ -31,6 +31,8 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
         mood: event.mood,
         finType: event.finType,
       );
+    } else if (event is PlacesCleared) {
+      yield PlacesInitial();
     }
   }
 
