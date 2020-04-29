@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:serendipity/models/models.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlaceCard extends StatelessWidget {
   final Place place;
@@ -39,7 +40,13 @@ class PlaceCard extends StatelessWidget {
                 children: <Widget>[
                   FlatButton(
                     child: const Text('Open in Maps'),
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (await canLaunch(place.googleMapsUrl)) {
+                        await launch(place.googleMapsUrl);
+                      } else {
+                        print('Could not launch url.');
+                      }
+                    },
                   ),
                 ],
               ),
