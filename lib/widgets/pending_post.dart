@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:serendipity/models/models.dart';
 
 class PendingPost extends StatelessWidget {
-  final VoidCallback onPressed;
+  final Place place;
+  final VoidCallback onCleared;
 
-  const PendingPost(this.onPressed);
+  const PendingPost({
+    @required this.place,
+    @required this.onCleared,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: CircleAvatar(),
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(
+          place.photoReferences.isNotEmpty
+              ? place.photoReferences[0].getRequestUrlForWidth(50)
+              : place.icon,
+        ),
+      ),
       title: Text('Pending Activity'),
-      trailing: IconButton(
-        icon: Icon(Icons.check),
-        onPressed: onPressed,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text('Mark complete', style: Theme.of(context).textTheme.caption),
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: onCleared,
+          ),
+        ],
       ),
     );
   }

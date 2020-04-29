@@ -120,6 +120,9 @@ class PlacesAPI {
       throw PlacesException(placesResponse.status.toString().split('.')[1]);
     }
 
-    return placesResponse.results.map((json) => Place.fromJson(json)).toList();
+    return placesResponse.results
+        .map((json) => Place.fromJson(json))
+        .where((Place place) => place.photoReferences.isNotEmpty)
+        .toList();
   }
 }

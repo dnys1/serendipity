@@ -11,7 +11,7 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  List<Place> _feed = [];
+  List<Post> _feed = [];
   PendingPost _pendingPost;
 
   @override
@@ -21,8 +21,10 @@ class _FeedScreenState extends State<FeedScreen> {
 
   Future<bool> getRandomFeed() async {
     while (_feed.length < 50) {
-      _feed.addAll(await PlacesAPI()
-          .getRandomPlace(mood: Mood.Any, finType: FinType.Any));
+      _feed.addAll((await PlacesAPI()
+              .getRandomPlace(mood: Mood.Any, finType: FinType.Any))
+          .where((Place place) => place.photoReferences.isNotEmpty)
+          .map((Place place) => Post(place: place)));
       _feed.shuffle();
     }
 
@@ -38,57 +40,63 @@ class _FeedScreenState extends State<FeedScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () async {
+              if (_pendingPost != null) {
+                return showDialog(
+                  context: context,
+                  child: AlertDialog(
+                    title: Text('Oh no!'),
+                    content: Text(
+                        'You already have a pending activity. Complete that before starting another!'),
+                  ),
+                );
+              }
+              var pendingPlace = await Navigator.of(context).pushNamed('/add');
+              if (pendingPlace == null) {
+                return;
+              }
+              setState(() {
+                _pendingPost = PendingPost(
+                  place: pendingPlace,
+                  onCleared: () => setState(() {
+                    _feed.insert(
+                        0,
+                        Post(
+                          userOwns: true,
+                          place: pendingPlace,
+                        ));
+                    _pendingPost = null;
+                  }),
+                );
+              });
+            },
           ),
         ],
       ),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: <Widget>[
-      //       FlatButton(
-      //         onPressed: () => BlocProvider.of<PlacesBloc>(context).add(
-      //             PlacesRequested(mood: Mood.Chill, finType: FinType.Paid)),
-      //         child: Text('Press Me'),
-      //       ),
-      //       BlocBuilder<PlacesBloc, PlacesState>(builder: (context, state) {
-      //         if (state is PlacesInitial) {
-      //           return Text('Press the button to begin.');
-      //         } else if (state is PlacesRequestInProgress) {
-      //           return CircularProgressIndicator();
-      //         } else if (state is PlacesSuccess) {
-      //           return PlaceCard(place: state.place);
-      //         } else {
-      //           // PlacesFailure
-      //           return Text((state as PlacesFailure).message);
-      //         }
-      //       }),
-      //     ],
-      //   ),
-      // ),
       body: FutureBuilder(
-          future: getRandomFeed(),
-          builder: (context, snapshot) {
-            Widget child;
-            if (snapshot.hasData) {
-              child = ListView(
-                children:
-                    (_pendingPost == null ? <Widget>[] : <Widget>[_pendingPost])
-                      ..addAll(_feed.map((Place place) => Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Post(place: place),
-                          ))),
-              );
-            } else if (snapshot.hasError) {
-              child = Text(snapshot.error);
-            } else {
-              child = CircularProgressIndicator();
-            }
-
-            return Center(
-              child: child,
+        future: getRandomFeed(),
+        builder: (context, snapshot) {
+          Widget child;
+          if (snapshot.hasData) {
+            child = ListView(
+              children:
+                  (_pendingPost == null ? <Widget>[] : <Widget>[_pendingPost])
+                    ..addAll(_feed.map((post) => Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: post,
+                        ))),
             );
-          }),
+          } else if (snapshot.hasError) {
+            child = Text(snapshot.error);
+          } else {
+            child = CircularProgressIndicator();
+          }
+
+          return Center(
+            child: child,
+          );
+        },
+      ),
     );
   }
 }
