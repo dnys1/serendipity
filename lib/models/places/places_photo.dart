@@ -1,10 +1,11 @@
 import 'dart:math';
 
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import 'package:serendipity/api/places.dart';
 
-class PlacesPhoto {
+class PlacesPhoto extends Equatable {
   /// The `photo_reference` property of the Places API body.
   final String id;
 
@@ -19,6 +20,9 @@ class PlacesPhoto {
     @required this.maxHeight,
     @required this.maxWidth,
   });
+
+  @override
+  List<Object> get props => [id, maxHeight, maxWidth];
 
   /// Request a URL for this photo given a certain height, in pixels.
   String getRequestUrlForHeight(int height) => PlacesAPI.createPhotoRequestUrl(

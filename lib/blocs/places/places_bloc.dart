@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:serendipity/api/places.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:serendipity/data/activities.dart';
-import 'package:http/http.dart' as http;
+import 'package:serendipity/api/places_exception.dart';
 
 import '../../models/models.dart';
 
@@ -16,6 +12,12 @@ part 'places_event.dart';
 part 'places_state.dart';
 
 class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
+  final PlacesAPI placesAPI;
+
+  PlacesBloc({
+    @required this.placesAPI,
+  }) : assert(placesAPI != null, 'API reference cannot be null');
+
   @override
   PlacesState get initialState => PlacesInitial();
 
@@ -37,46 +39,12 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   }) async* {
     yield PlacesRequestInProgress();
     try {
-      // Get a random activity to use
-      Activity randomActivity = MockActivities.selectRandomActivity(
-        mood: mood,
-        finType: finType,
-      );
+      Place randomPlace =
+          await placesAPI.getRandomPlace(mood: mood, finType: finType);
 
-      // Get the user's location
-      Position position = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
-        locationPermissionLevel: GeolocationPermission.locationWhenInUse,
-      );
-
-      print('lat: ${position.latitude}, long: ${position.longitude}');
-
-      // Generate and send the Places API request
-      String requestUrl = PlacesAPI.createRequestUrl(
-        keyword: randomActivity.searchTerm,
-        location: Location(position.latitude, position.longitude),
-      );
-
-      final http.Response resp = await http.get(requestUrl);
-
-      if (resp.statusCode != 200) {
-        yield PlacesFailure(resp.body);
-        return;
-      }
-
-      // Parse the results of the query to a list of [Place] entities.
-      final PlacesResponse placesResponse =
-          PlacesResponse.fromJson(json.decode(resp.body));
-
-      if (placesResponse.status != PlacesResponseStatus.OK) {
-        yield PlacesFailure(placesResponse.status.toString().split('.')[1]);
-        return;
-      }
-
-      final List<Place> places =
-          placesResponse.results.map((json) => Place.fromJson(json)).toList();
-
-      yield PlacesSuccess(places.elementAt(Random().nextInt(places.length)));
+      yield PlacesSuccess(randomPlace);
+    } on PlacesException catch (e) {
+      yield PlacesFailure(e.message);
     } catch (e) {
       yield PlacesFailure(e.toString());
     }

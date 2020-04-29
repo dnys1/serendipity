@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -7,7 +8,7 @@ part 'place.g.dart';
 
 /// Identifies a single place for a specific Activity.
 @JsonSerializable(createToJson: false)
-class Place {
+class Place extends Equatable {
   /// The unique identifier for this place. Used for creating `googleMapsUrl`.
   @JsonKey(name: 'place_id')
   final String id;
@@ -40,6 +41,9 @@ class Place {
     this.rating,
   })  : assert(id != null, 'ID cannot be null.'),
         assert(name != null, 'Name cannot be null.');
+
+  @override
+  List<Object> get props => [id, name, icon, photoReferences];
 
   factory Place.fromJson(Map<String, dynamic> json) => _$PlaceFromJson(json);
 
