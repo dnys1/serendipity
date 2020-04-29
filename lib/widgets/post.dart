@@ -24,33 +24,38 @@ class _PostState extends State<Post> {
   int _userRating;
 
   Widget _buildStarRating() {
-    return Column(
-      children: <Widget>[
-        Text('How was your experience?'),
-        SizedBox(
-          height: _kStarHeight + 2 * _kStarPadding,
-          width: _kStarHeight * 5,
-          child: ListView.builder(
-            itemExtent: _kStarHeight,
-            itemCount: 5,
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: _userRating == null || _userRating == 0
-                    ? () => setState(() => _userRating = index + 1)
-                    : null,
-                child: Image.asset(
-                  _userRating == null || index + 1 > _userRating
-                      ? 'assets/star_empty.png'
-                      : 'assets/star_full.png',
-                  width: _kStarHeight,
-                  height: _kStarHeight,
-                ),
-              );
-            },
-            scrollDirection: Axis.horizontal,
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: <Widget>[
+          _userRating == null
+              ? Text('How was your experience?')
+              : Text('Thanks for submitting your review!'),
+          SizedBox(
+            height: _kStarHeight + 2 * _kStarPadding,
+            width: _kStarHeight * 5,
+            child: ListView.builder(
+              itemExtent: _kStarHeight,
+              itemCount: 5,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: _userRating == null || _userRating == 0
+                      ? () => setState(() => _userRating = index + 1)
+                      : null,
+                  child: Image.asset(
+                    _userRating == null || index + 1 > _userRating
+                        ? 'assets/star_empty.png'
+                        : 'assets/star_full.png',
+                    width: _kStarHeight,
+                    height: _kStarHeight,
+                  ),
+                );
+              },
+              scrollDirection: Axis.horizontal,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -74,12 +79,15 @@ class _PostState extends State<Post> {
                 : Text('An Activity was recently completed at:'),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(widget.place.name,
+                style: Theme.of(context).textTheme.subtitle2),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(widget.place.name,
-                    style: Theme.of(context).textTheme.subtitle2),
                 SizedBox(width: 5),
                 Icon(Icons.star, color: Colors.amber, size: 14),
                 SizedBox(width: 5),
@@ -87,13 +95,7 @@ class _PostState extends State<Post> {
               ],
             ),
           ),
-          if (widget.userOwns)
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: _userRating == null
-                  ? _buildStarRating()
-                  : Text('Thanks for submitting your review!'),
-            ),
+          if (widget.userOwns) _buildStarRating(),
         ],
       ),
     );
