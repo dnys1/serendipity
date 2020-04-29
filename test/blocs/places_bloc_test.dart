@@ -27,7 +27,7 @@ void main() {
       build: () async {
         when(mockAPI.getRandomPlace(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
-            .thenAnswer((_) async => testPlace);
+            .thenAnswer((_) async => [testPlace]);
         return PlacesBloc(placesAPI: mockAPI);
       },
       act: (bloc) => bloc

@@ -1,5 +1,6 @@
 enum Mood {
   Adventure,
   Chill,
-  Hungry
+  Hungry,
+  Any
 }

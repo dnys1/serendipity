@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -39,8 +40,10 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   }) async* {
     yield PlacesRequestInProgress();
     try {
-      Place randomPlace =
+      List<Place> places =
           await placesAPI.getRandomPlace(mood: mood, finType: finType);
+
+      Place randomPlace = places.elementAt(Random().nextInt(places.length));
 
       yield PlacesSuccess(randomPlace);
     } on PlacesException catch (e) {

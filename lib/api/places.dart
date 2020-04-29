@@ -24,13 +24,20 @@ class PlacesAPI {
   /// Default search radius, in meters (max. 50,000)
   static const int DEFAULT_RADIUS = 5000;
 
-  /// The base url for a Place API nearby search request
+  /// The base url for a Places API nearby search request
   static const String searchUrl =
       'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
+
+  /// The base url for a Places API details request
+  static const String detailsUrl =
+      'https://maps.googleapis.com/maps/api/place/details/json?';
 
   /// The base url for a Places API photo request
   static const String photoRequestUrl =
       'https://maps.googleapis.com/maps/api/place/photo?';
+
+  /// The user's current latitude and longitude.
+  Location _userLocation;
 
   /// Creates the Places API search request URL starting with `searchUrl`.
   static String createRequestUrl({
@@ -46,6 +53,11 @@ class PlacesAPI {
 
     return searchUrl +
         'keyword=$keyword&location=$latlong&radius=$DEFAULT_RADIUS&key=$API_KEY';
+  }
+
+  /// Creates a Places API details request, used for getting more images.
+  static String createDetailRequestUrl(String placeId) {
+    return detailsUrl + 'place_id=$placeId&fields=photo&key=$API_KEY';
   }
 
   /// Creates a Places API photo request URL starting with `photoRequestUrl`.
@@ -69,7 +81,7 @@ class PlacesAPI {
     return requestUrl;
   }
 
-  Future<Place> getRandomPlace({
+  Future<List<Place>> getRandomPlace({
     @required Mood mood,
     @required FinType finType,
   }) async {
@@ -79,18 +91,19 @@ class PlacesAPI {
       finType: finType,
     );
 
-    // Get the user's location
-    Position position = await Geolocator().getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.medium,
-      locationPermissionLevel: GeolocationPermission.locationWhenInUse,
-    );
-
-    print('lat: ${position.latitude}, long: ${position.longitude}');
+    // Get the user's location (only once)
+    if (_userLocation == null) {
+      Position position = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        locationPermissionLevel: GeolocationPermission.locationWhenInUse,
+      );
+      _userLocation = Location(position.latitude, position.longitude);
+    }
 
     // Generate and send the Places API request
     String requestUrl = PlacesAPI.createRequestUrl(
       keyword: randomActivity.searchTerm,
-      location: Location(position.latitude, position.longitude),
+      location: _userLocation,
     );
 
     final http.Response resp = await http.get(requestUrl);
@@ -107,9 +120,6 @@ class PlacesAPI {
       throw PlacesException(placesResponse.status.toString().split('.')[1]);
     }
 
-    final List<Place> places =
-        placesResponse.results.map((json) => Place.fromJson(json)).toList();
-
-    return places.elementAt(Random().nextInt(places.length));
+    return placesResponse.results.map((json) => Place.fromJson(json)).toList();
   }
 }
