@@ -30,8 +30,8 @@ void main() {
             .thenAnswer((_) async => [testPlace]);
         return PlacesBloc(placesAPI: mockAPI);
       },
-      act: (bloc) => bloc
-          .add(PlacesRequested(mood: Mood.Adventure, finType: FinType.Paid)),
+      act: (bloc) =>
+          bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any)),
       expect: [
         PlacesRequestInProgress(),
         PlacesSuccess(testPlace),
@@ -46,11 +46,51 @@ void main() {
             .thenThrow(PlacesException('Error'));
         return PlacesBloc(placesAPI: mockAPI);
       },
-      act: (bloc) => bloc
-          .add(PlacesRequested(mood: Mood.Adventure, finType: FinType.Paid)),
+      act: (bloc) =>
+          bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any)),
       expect: [
         PlacesRequestInProgress(),
         PlacesFailure('Error'),
+      ],
+    );
+  });
+
+  group('PlacesCleared', () {
+    blocTest(
+      'PlacesSuccess',
+      build: () async {
+        when(mockAPI.getRandomPlace(
+                mood: anyNamed('mood'), finType: anyNamed('finType')))
+            .thenAnswer((_) async => [testPlace]);
+        return PlacesBloc(placesAPI: mockAPI);
+      },
+      act: (bloc) async {
+        bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any));
+        bloc.add(PlacesCleared());
+      },
+      expect: [
+        PlacesRequestInProgress(),
+        PlacesSuccess(testPlace),
+        PlacesInitial(),
+      ],
+    );
+
+    blocTest(
+      'PlacesFailure',
+      build: () async {
+        when(mockAPI.getRandomPlace(
+                mood: anyNamed('mood'), finType: anyNamed('finType')))
+            .thenThrow(PlacesException('Error'));
+        return PlacesBloc(placesAPI: mockAPI);
+      },
+      act: (bloc) async {
+        bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any));
+        bloc.add(PlacesCleared());
+      },
+      expect: [
+        PlacesRequestInProgress(),
+        PlacesFailure('Error'),
+        PlacesInitial(),
       ],
     );
   });
