@@ -1,6 +1,8 @@
 # Serendipity
 
-<img src="https://github.com/dnys1/serendipity/blob/master/assets/icon.png?raw=true" height="200" width="200" style="display: block; margin: auto;">
+<div align="center">
+    <img src="https://github.com/dnys1/serendipity/blob/master/assets/icon.png?raw=true" height="200" width="200">
+</div>
 
 Serendipity is my take on the Go concept. When a user wants to make a post, they will be given a random activity based on their selected mood and price range. Only after completing the activity and collecting photos as evidence can their post be complete and added to the feed.
 
