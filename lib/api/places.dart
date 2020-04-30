@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
@@ -79,6 +78,26 @@ class PlacesAPI {
     }
 
     return requestUrl;
+  }
+
+  Future<List<PlacesPhoto>> getAllPhotosForPlace(Place place) async {
+    String requestUrl = createDetailRequestUrl(place.id);
+
+    final http.Response resp = await http.get(requestUrl);
+
+    if (resp.statusCode != 200) {
+      throw PlacesException(resp.body);
+    }
+
+    // Parse the results of the query to a list of [Place] entities.
+    final PlacesDetailResponse placesResponse =
+        PlacesDetailResponse.fromJson(json.decode(resp.body));
+
+    if (placesResponse.status != PlacesResponseStatus.OK) {
+      throw PlacesException(placesResponse.status.toString().split('.')[1]);
+    }
+
+    return Place.photoReferencesFromJson(placesResponse.result['photos']);
   }
 
   Future<List<Place>> getRandomPlace({

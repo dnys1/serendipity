@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serendipity/blocs/places/places_bloc.dart';
+import 'package:serendipity/data/avatars.dart';
 import 'package:serendipity/models/models.dart';
+import 'package:serendipity/widgets/add_avatar_button.dart';
 import 'package:serendipity/widgets/widgets.dart';
 
 class AddScreen extends StatefulWidget {
@@ -13,6 +15,8 @@ class _AddScreenState extends State<AddScreen> {
   Mood _selectedMood = Mood.Adventure;
   FinType _selectedFinType = FinType.Free;
   Place _currPlace;
+
+  List<int> _invitedPeople = [0];
 
   Widget _buildMoodDropdown() {
     return DropdownButton(
@@ -64,7 +68,7 @@ class _AddScreenState extends State<AddScreen> {
             icon = Icon(Icons.monetization_on);
             break;
           case FinType.Any:
-            icon = Icon(Icons.play_arrow);
+            icon = Icon(Icons.language);
             break;
         }
         return DropdownMenuItem<FinType>(
@@ -104,7 +108,10 @@ class _AddScreenState extends State<AddScreen> {
                       horizontal: 5.0, vertical: 20.0),
                   child: state is PlacesInitial
                       ? Image.asset('assets/wand.png')
-                      : CircularProgressIndicator(),
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: CircularProgressIndicator(),
+                        ),
                 ),
               );
             } else if (state is PlacesSuccess) {
@@ -155,6 +162,30 @@ class _AddScreenState extends State<AddScreen> {
               ],
             ),
             _buildMagicButton(),
+            Column(
+              children: <Widget>[
+                Text('Invite people'),
+                SizedBox(height: 10),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      AvatarBar(
+                        avatarIndices: _invitedPeople,
+                        radius: kLargeAvatarSize,
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      ),
+                      SizedBox(width: 5),
+                      AddAvatarButton(
+                        onSelect: (int selected) =>
+                            setState(() => _invitedPeople.add(selected)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             RaisedButton(
               child: Text('Start Activity!'),
               color: Colors.blue,
@@ -162,9 +193,13 @@ class _AddScreenState extends State<AddScreen> {
               onPressed: _currPlace == null
                   ? null
                   : () {
-                    BlocProvider.of<PlacesBloc>(context).add(PlacesCleared());
-                    Navigator.of(context).pop(_currPlace);
-                  },
+                      BlocProvider.of<PlacesBloc>(context).add(PlacesCleared());
+                      Navigator.of(context).pop(Post(
+                        place: _currPlace,
+                        userOwns: true,
+                        peoplePresent: _invitedPeople,
+                      ));
+                    },
             ),
           ],
         ),

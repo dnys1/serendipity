@@ -1,16 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'places_response.g.dart';
+import 'places_response_status.dart';
 
-enum PlacesResponseStatus {
-  OK,
-  ZERO_RESULTS,
-  OVER_QUERY_LIMIT,
-  REQUEST_DENIED,
-  INVALID_REQUEST,
-  UNKNOWN_ERROR
-}
+part 'places_response.g.dart';
 
 @JsonSerializable(createToJson: false)
 class PlacesResponse {

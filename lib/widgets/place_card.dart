@@ -16,42 +16,49 @@ class PlaceCard extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Image.network(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 150,
+              ),
+              child: Image.network(
               place.photoReferences.isEmpty
                   ? place.icon
                   : place.photoReferences[0].getRequestUrlForHeight(150),
+                fit: BoxFit.cover,
+            ),
             ),
           ),
           Expanded(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              ListTile(
-                title: Text(place.name),
-                subtitle: Row(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                ListTile(
+                  title: Text(place.name),
+                  subtitle: Row(
+                    children: <Widget>[
+                      Icon(Icons.star, color: Colors.amber, size: 14),
+                      SizedBox(width: 5),
+                      Text('${place.rating} / 5'),
+                    ],
+                  ),
+                ),
+                ButtonBar(
                   children: <Widget>[
-                    Icon(Icons.star, color: Colors.amber, size: 14),
-                    SizedBox(width: 5),
-                    Text('${place.rating} / 5'),
+                    FlatButton(
+                      child: const Text('Open in Maps'),
+                      onPressed: () async {
+                        if (await canLaunch(place.googleMapsUrl)) {
+                          await launch(place.googleMapsUrl);
+                        } else {
+                          print('Could not launch url.');
+                        }
+                      },
+                    ),
                   ],
                 ),
-              ),
-              ButtonBar(
-                children: <Widget>[
-                  FlatButton(
-                    child: const Text('Open in Maps'),
-                    onPressed: () async {
-                      if (await canLaunch(place.googleMapsUrl)) {
-                        await launch(place.googleMapsUrl);
-                      } else {
-                        print('Could not launch url.');
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ))
+              ],
+            ),
+          ),
         ],
       ),
     );

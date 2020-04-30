@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serendipity/api/places.dart';
 import 'package:serendipity/blocs/bloc_delegate.dart';
-import 'package:serendipity/screens/feed/add_screen.dart';
+import 'package:serendipity/screens/add/add_screen.dart';
 import 'package:serendipity/screens/screens.dart';
 
 import 'blocs/places/places_bloc.dart';

@@ -1,5 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:serendipity/data/avatars.dart';
 import 'package:serendipity/models/models.dart';
+import 'package:serendipity/screens/detail/detail_screen.dart';
+import 'package:serendipity/widgets/widgets.dart';
 
 const double _kStarHeight = 40.0;
 const double _kStarPadding = 4.0;
@@ -11,17 +16,39 @@ class Post extends StatefulWidget {
   /// The place represented by this post.
   final Place place;
 
-  const Post({
+  /// The date and time this post was made.
+  final DateTime dateTime;
+
+  /// A list of people present.
+  /// The avatar index for this demo.
+  final List<int> peoplePresent;
+
+  Post({
     @required this.place,
     this.userOwns = false,
-  });
+    DateTime dateTime,
+    List<int> peoplePresent,
+  })  : assert(place != null, 'Place cannot be null.'),
+        this.dateTime = dateTime ?? _randomDate,
+        this.peoplePresent = peoplePresent ?? _randomPeoplePresent;
 
   @override
   _PostState createState() => _PostState();
+
+  /// Picks a random date from 2019
+  static DateTime get _randomDate =>
+      DateTime(2019, Random().nextInt(12) + 1, Random().nextInt(30) + 1);
+
+  /// Picks at most 5 random avatars
+  static List<int> get _randomPeoplePresent => List.generate(
+      Random().nextInt(4) + 1, (index) => Random().nextInt(Avatars.avatars.length));
 }
 
-class _PostState extends State<Post> {
+class _PostState extends State<Post> with AutomaticKeepAliveClientMixin {
   int _userRating;
+
+  @override
+  bool get wantKeepAlive => true;
 
   Widget _buildStarRating() {
     return Padding(
@@ -61,42 +88,59 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: <Widget>[
-          AspectRatio(
-            aspectRatio: 1,
-            child: Image.network(
-              widget.place.photoReferences[0].getRequestUrlForWidth(
-                  MediaQuery.of(context).size.width.toInt()),
-              fit: BoxFit.cover,
+    super.build(context);
+    return GestureDetector(
+      onTap: () => Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => DetailScreen(widget))),
+      child: Card(
+        child: Column(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 1,
+              child: Image.network(
+                widget.place.photoReferences[0].getRequestUrlForWidth(
+                    MediaQuery.of(context).size.width.toInt()),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: widget.userOwns
-                ? Text('You recently completed an activity at:')
-                : Text('An Activity was recently completed at:'),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(widget.place.name,
-                style: Theme.of(context).textTheme.subtitle2),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(width: 5),
-                Icon(Icons.star, color: Colors.amber, size: 14),
-                SizedBox(width: 5),
-                Text('${widget.place.rating} / 5'),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  AvatarBar(avatarIndices: widget.peoplePresent),
+                  Text(
+                    widget.dateTime.toString().split(' ')[0],
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                ],
+              ),
             ),
-          ),
-          if (widget.userOwns) _buildStarRating(),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: widget.userOwns
+                  ? Text('You recently completed an activity at:')
+                  : Text('An Activity was recently completed at:'),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(widget.place.name,
+                  style: Theme.of(context).textTheme.subtitle2),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.star, color: Colors.amber, size: 14),
+                  SizedBox(width: 5),
+                  Text('${widget.place.rating} / 5'),
+                ],
+              ),
+            ),
+            if (widget.userOwns) _buildStarRating(),
+          ],
+        ),
       ),
     );
   }

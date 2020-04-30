@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:serendipity/api/places.dart';
-import 'package:serendipity/blocs/places/places_bloc.dart';
 import 'package:serendipity/models/models.dart';
+import 'package:serendipity/screens/add/add_screen.dart';
 import 'package:serendipity/widgets/widgets.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -11,7 +10,7 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  List<Post> _feed = [];
+  List<Widget> _feed = [];
   PendingPost _pendingPost;
 
   @override
@@ -19,8 +18,9 @@ class _FeedScreenState extends State<FeedScreen> {
     super.initState();
   }
 
-  Future<bool> getRandomFeed() async {
+  Future<bool> _getRandomFeed() async {
     while (_feed.length < 50) {
+      // Generate a clickable post for a bunch of random places.
       _feed.addAll((await PlacesAPI()
               .getRandomPlace(mood: Mood.Any, finType: FinType.Any))
           .where((Place place) => place.photoReferences.isNotEmpty)
@@ -32,6 +32,34 @@ class _FeedScreenState extends State<FeedScreen> {
     return true;
   }
 
+  Future<void> _clearPendingPost() async {
+    if (_pendingPost != null) {
+      return showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text('Oh no!'),
+          content: Text(
+              'You already have a pending activity. Complete that before starting another!'),
+        ),
+      );
+    }
+    Post pendingPost = await Navigator.of(context).push(MaterialPageRoute<Post>(
+      builder: (_) => AddScreen(),
+    ));
+    if (pendingPost == null) {
+      return;
+    }
+    setState(() {
+      _pendingPost = PendingPost(
+        place: pendingPost.place,
+        onCleared: () => setState(() {
+          _feed.insert(0, pendingPost);
+          _pendingPost = null;
+        }),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,41 +68,12 @@ class _FeedScreenState extends State<FeedScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () async {
-              if (_pendingPost != null) {
-                return showDialog(
-                  context: context,
-                  child: AlertDialog(
-                    title: Text('Oh no!'),
-                    content: Text(
-                        'You already have a pending activity. Complete that before starting another!'),
-                  ),
-                );
-              }
-              var pendingPlace = await Navigator.of(context).pushNamed('/add');
-              if (pendingPlace == null) {
-                return;
-              }
-              setState(() {
-                _pendingPost = PendingPost(
-                  place: pendingPlace,
-                  onCleared: () => setState(() {
-                    _feed.insert(
-                        0,
-                        Post(
-                          userOwns: true,
-                          place: pendingPlace,
-                        ));
-                    _pendingPost = null;
-                  }),
-                );
-              });
-            },
+            onPressed: _clearPendingPost,
           ),
         ],
       ),
       body: FutureBuilder(
-        future: getRandomFeed(),
+        future: _getRandomFeed(),
         builder: (context, snapshot) {
           Widget child;
           if (snapshot.hasData) {
