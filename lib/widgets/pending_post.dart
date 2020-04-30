@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:serendipity/models/models.dart';
 
+/// A user's activity which has not been completed.
 class PendingPost extends StatelessWidget {
+  /// The place the activity is taking place.
   final Place place;
-  final VoidCallback onCleared;
+
+  /// A callback for when the checkmark is pressed.
+  final VoidCallback onComplete;
 
   const PendingPost({
     @required this.place,
-    @required this.onCleared,
+    @required this.onComplete,
   });
 
   @override
@@ -27,7 +31,7 @@ class PendingPost extends StatelessWidget {
           Text('Mark complete', style: Theme.of(context).textTheme.caption),
           IconButton(
             icon: Icon(Icons.check),
-            onPressed: onCleared,
+            onPressed: onComplete,
           ),
         ],
       ),

@@ -6,7 +6,7 @@ import 'places_photo.dart';
 
 part 'place.g.dart';
 
-/// Identifies a single place for a specific Activity.
+/// Identifies a single place for a specific [Activity].
 @JsonSerializable(createToJson: false)
 class Place extends Equatable {
   /// The unique identifier for this place. Used for creating `googleMapsUrl`.

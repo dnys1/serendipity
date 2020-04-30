@@ -80,6 +80,8 @@ class PlacesAPI {
     return requestUrl;
   }
 
+  /// Retrieves a list of up to 20 photos for a specific place
+  /// using a separate Place Details request.
   Future<List<PlacesPhoto>> getAllPhotosForPlace(Place place) async {
     String requestUrl = createDetailRequestUrl(place.id);
 
@@ -100,7 +102,8 @@ class PlacesAPI {
     return Place.photoReferencesFromJson(placesResponse.result['photos']);
   }
 
-  Future<List<Place>> getRandomPlace({
+  /// Retrieves a list of places for a given mood and type.
+  Future<List<Place>> retrievePlacesForMoodAndType({
     @required Mood mood,
     @required FinType finType,
   }) async {

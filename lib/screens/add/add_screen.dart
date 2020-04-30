@@ -6,16 +6,23 @@ import 'package:serendipity/models/models.dart';
 import 'package:serendipity/widgets/add_avatar_button.dart';
 import 'package:serendipity/widgets/widgets.dart';
 
+/// The screen to add a new activity to the feed.
 class AddScreen extends StatefulWidget {
   @override
   _AddScreenState createState() => _AddScreenState();
 }
 
 class _AddScreenState extends State<AddScreen> {
+  /// The currently selected mood.
   Mood _selectedMood = Mood.Adventure;
+
+  /// The currently selected financial type.
   FinType _selectedFinType = FinType.Free;
+
+  /// The currently selected place.
   Place _currPlace;
 
+  /// A list of everyone invited to the activity.
   List<int> _invitedPeople = [0];
 
   Widget _buildMoodDropdown() {
@@ -157,7 +164,7 @@ class _AddScreenState extends State<AddScreen> {
             ),
             Column(
               children: <Widget>[
-                Text('Select a financial type'),
+                Text('Select your price range'),
                 _buildFinancialTypeDropdown(),
               ],
             ),
@@ -198,6 +205,7 @@ class _AddScreenState extends State<AddScreen> {
                         place: _currPlace,
                         userOwns: true,
                         peoplePresent: _invitedPeople,
+                        dateTime: DateTime.now(),
                       ));
                     },
             ),

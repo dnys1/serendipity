@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const kLargeAvatarSize = 30.0;
 const kSmallAvatarSize = 10.0;
 
+/// Mock users, represented as avatars.
 class Avatars {
   static const List<AssetImage> avatars = [
     AssetImage('assets/avatars/avatar1.png'),

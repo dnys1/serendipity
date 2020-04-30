@@ -25,7 +25,7 @@ void main() {
     blocTest(
       'PlacesSuccess',
       build: () async {
-        when(mockAPI.getRandomPlace(
+        when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenAnswer((_) async => [testPlace]);
         return PlacesBloc(placesAPI: mockAPI);
@@ -41,7 +41,7 @@ void main() {
     blocTest(
       'PlacesFailure',
       build: () async {
-        when(mockAPI.getRandomPlace(
+        when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenThrow(PlacesException('Error'));
         return PlacesBloc(placesAPI: mockAPI);
@@ -57,9 +57,9 @@ void main() {
 
   group('PlacesCleared', () {
     blocTest(
-      'PlacesSuccess',
+      'PlacesSuccess to start',
       build: () async {
-        when(mockAPI.getRandomPlace(
+        when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenAnswer((_) async => [testPlace]);
         return PlacesBloc(placesAPI: mockAPI);
@@ -76,9 +76,9 @@ void main() {
     );
 
     blocTest(
-      'PlacesFailure',
+      'PlacesFailure to start',
       build: () async {
-        when(mockAPI.getRandomPlace(
+        when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenThrow(PlacesException('Error'));
         return PlacesBloc(placesAPI: mockAPI);

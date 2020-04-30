@@ -43,7 +43,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
     yield PlacesRequestInProgress();
     try {
       List<Place> places =
-          await placesAPI.getRandomPlace(mood: mood, finType: finType);
+          await placesAPI.retrievePlacesForMoodAndType(mood: mood, finType: finType);
 
       Place randomPlace = places.elementAt(Random().nextInt(places.length));
 

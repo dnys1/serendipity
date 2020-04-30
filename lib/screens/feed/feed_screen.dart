@@ -4,6 +4,7 @@ import 'package:serendipity/models/models.dart';
 import 'package:serendipity/screens/add/add_screen.dart';
 import 'package:serendipity/widgets/widgets.dart';
 
+/// The main screen for displaying the scrollable feed.
 class FeedScreen extends StatefulWidget {
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -22,7 +23,7 @@ class _FeedScreenState extends State<FeedScreen> {
     while (_feed.length < 50) {
       // Generate a clickable post for a bunch of random places.
       _feed.addAll((await PlacesAPI()
-              .getRandomPlace(mood: Mood.Any, finType: FinType.Any))
+              .retrievePlacesForMoodAndType(mood: Mood.Any, finType: FinType.Any))
           .where((Place place) => place.photoReferences.isNotEmpty)
           .map((Place place) => Post(place: place)));
       _feed.shuffle();
@@ -52,7 +53,7 @@ class _FeedScreenState extends State<FeedScreen> {
     setState(() {
       _pendingPost = PendingPost(
         place: pendingPost.place,
-        onCleared: () => setState(() {
+        onComplete: () => setState(() {
           _feed.insert(0, pendingPost);
           _pendingPost = null;
         }),

@@ -5,6 +5,7 @@ import 'places_response_status.dart';
 
 part 'places_response.g.dart';
 
+/// A response to a Place Search query.
 @JsonSerializable(createToJson: false)
 class PlacesResponse {
   /// A list of results to be parsed into [Place] objects.

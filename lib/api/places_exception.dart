@@ -1,3 +1,4 @@
+/// An Exception occuring during a request to the Places API.
 class PlacesException implements Exception {
   final String message;
 

@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'models.dart';
 
+/// A data type to represent an activity class, i.e. Hiking.
 class Activity {
   /// A one-word activity description.
   final String description;

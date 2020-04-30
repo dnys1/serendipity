@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 
 import 'package:serendipity/api/places.dart';
 
+/// A photo of a [Place], represented by its unique Places photo reference.
 class PlacesPhoto extends Equatable {
   /// The `photo_reference` property of the Places API body.
   final String id;

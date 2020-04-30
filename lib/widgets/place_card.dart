@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:serendipity/models/models.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// A card representing a [Place], for use in [AddScreen] when
+/// showing a user the selected [Place].
 class PlaceCard extends StatelessWidget {
+  /// The place shown in the widget.
   final Place place;
 
   const PlaceCard({

@@ -9,6 +9,10 @@ import 'package:serendipity/widgets/widgets.dart';
 const double _kStarHeight = 40.0;
 const double _kStarPadding = 4.0;
 
+/// A widget containing information from a completed activity,
+/// represented as a [Card] widget with [Place] and [DateTime]
+/// information. This widget is often passed around for the [Place]
+/// in lieu of maintaining a separate class for [Post] data.
 class Post extends StatefulWidget {
   /// Whether or not the user owns this post.
   final bool userOwns;
@@ -41,12 +45,15 @@ class Post extends StatefulWidget {
 
   /// Picks at most 5 random avatars
   static List<int> get _randomPeoplePresent => List.generate(
-      Random().nextInt(4) + 1, (index) => Random().nextInt(Avatars.avatars.length));
+      Random().nextInt(4) + 1,
+      (index) => Random().nextInt(Avatars.avatars.length));
 }
 
 class _PostState extends State<Post> with AutomaticKeepAliveClientMixin {
+  /// The user's rating, if they own the post
   int _userRating;
 
+  /// Add keep alive to maintain state (namely `_userRating`), when in a ListView.
   @override
   bool get wantKeepAlive => true;
 
@@ -124,8 +131,11 @@ class _PostState extends State<Post> with AutomaticKeepAliveClientMixin {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(widget.place.name,
-                  style: Theme.of(context).textTheme.subtitle2),
+              child: Text(
+                widget.place.name,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 4.0),

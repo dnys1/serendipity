@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:serendipity/data/avatars.dart';
 
+/// A row of avatars, representing the users associated
+/// with a specific [Post], or completed activity.
 class AvatarBar extends StatelessWidget {
+  /// An ordered list of the users, represented by the avatar's index
+  /// in [Avatars].avatars
   final List<int> avatarIndices;
 
+  /// Padding between and around each [CircleAvatar] widget.
   final EdgeInsets padding;
 
+  /// The radius of each [CircleAvatar] widget.
   final double radius;
-
-  final void Function(int) onTap;
 
   const AvatarBar({
     @required this.avatarIndices,
     this.padding = const EdgeInsets.symmetric(horizontal: 2),
     this.radius = kSmallAvatarSize,
-    this.onTap,
   });
 
   @override
@@ -25,10 +28,7 @@ class AvatarBar extends StatelessWidget {
       children: avatarIndices
           .map((idx) => Padding(
                 padding: padding,
-                child: GestureDetector(
-                  onTap: onTap == null ? null : () => onTap(idx),
-                  child: Avatars.circleAvatarForRadius(idx, radius),
-                ),
+                child: Avatars.circleAvatarForRadius(idx, radius),
               ))
           .toList(),
     );
