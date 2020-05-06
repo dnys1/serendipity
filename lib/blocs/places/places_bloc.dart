@@ -17,8 +17,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
 
   PlacesBloc({
     PlacesService placesService,
-  })  : assert(placesService != null, 'API reference cannot be null'),
-        _placesService = placesService ?? locator<PlacesService>();
+  }) : _placesService = placesService ?? locator<PlacesService>();
 
   @override
   PlacesState get initialState => PlacesInitial();

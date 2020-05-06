@@ -1,33 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:serendipity/blocs/places/places_bloc.dart';
 import 'package:serendipity/data/avatars.dart';
 import 'package:serendipity/models/models.dart';
 import 'package:serendipity/widgets/add_avatar_button.dart';
 import 'package:serendipity/widgets/widgets.dart';
 
-/// The screen to add a new activity to the feed.
-class AddScreen extends StatefulWidget {
+import 'add_screen_model.dart';
+
+class AddScreen extends StatelessWidget {
   @override
-  _AddScreenState createState() => _AddScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<AddScreenModel>(
+      create: (_) => AddScreenModel(),
+      child: _AddScreenView(),
+    );
+  }
 }
 
-class _AddScreenState extends State<AddScreen> {
-  /// The currently selected mood.
-  Mood _selectedMood = Mood.Adventure;
+/// The screen to add a new activity to the feed.
+class _AddScreenView extends StatefulWidget {
+  @override
+  _AddScreenViewState createState() => _AddScreenViewState();
+}
 
-  /// The currently selected financial type.
-  FinType _selectedFinType = FinType.Free;
+class _AddScreenViewState extends State<_AddScreenView> {
+  AddScreenModel _model;
 
-  /// The currently selected place.
-  Place _currPlace;
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  /// A list of everyone invited to the activity.
-  List<int> _invitedPeople = [0];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _model = Provider.of<AddScreenModel>(context);
+  }
 
   Widget _buildMoodDropdown() {
     return DropdownButton(
-      value: _selectedMood,
+      value: _model.selectedMood,
       items: Mood.values.map((Mood mood) {
         Icon icon;
         switch (mood) {
@@ -56,15 +70,13 @@ class _AddScreenState extends State<AddScreen> {
           ),
         );
       }).toList(),
-      onChanged: (Mood mood) => setState(() {
-        _selectedMood = mood;
-      }),
+      onChanged: _model.setSelectedMood,
     );
   }
 
   Widget _buildFinancialTypeDropdown() {
     return DropdownButton(
-      value: _selectedFinType,
+      value: _model.selectedFinType,
       items: FinType.values.map((FinType finType) {
         Icon icon;
         switch (finType) {
@@ -90,9 +102,7 @@ class _AddScreenState extends State<AddScreen> {
           ),
         );
       }).toList(),
-      onChanged: (FinType finType) => setState(() {
-        _selectedFinType = finType;
-      }),
+      onChanged: _model.setSelectedFinType,
     );
   }
 
@@ -109,7 +119,8 @@ class _AddScreenState extends State<AddScreen> {
                     borderRadius: BorderRadius.circular(50)),
                 onPressed: () => BlocProvider.of<PlacesBloc>(context).add(
                     PlacesRequested(
-                        mood: _selectedMood, finType: _selectedFinType)),
+                        mood: _model.selectedMood,
+                        finType: _model.selectedFinType)),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 5.0, vertical: 20.0),
@@ -124,9 +135,7 @@ class _AddScreenState extends State<AddScreen> {
             } else if (state is PlacesSuccess) {
               // Will activate the "Start Activity!" button on the next frame
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                setState(() {
-                  _currPlace = state.place;
-                });
+                _model.setCurrPlace(state.place);
               });
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -179,14 +188,13 @@ class _AddScreenState extends State<AddScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       AvatarBar(
-                        avatarIndices: _invitedPeople,
+                        avatarIndices: _model.invitedPeople,
                         radius: kLargeAvatarSize,
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                       ),
                       SizedBox(width: 5),
                       AddAvatarButton(
-                        onSelect: (int selected) =>
-                            setState(() => _invitedPeople.add(selected)),
+                        onSelect: _model.addInvitedPerson,
                       ),
                     ],
                   ),
@@ -197,14 +205,14 @@ class _AddScreenState extends State<AddScreen> {
               child: Text('Start Activity!'),
               color: Colors.blue,
               textColor: Colors.white,
-              onPressed: _currPlace == null
+              onPressed: _model.currPlace == null
                   ? null
                   : () {
                       BlocProvider.of<PlacesBloc>(context).add(PlacesCleared());
                       Navigator.of(context).pop(Post(
-                        place: _currPlace,
+                        place: _model.currPlace,
                         userOwns: true,
-                        peoplePresent: _invitedPeople,
+                        peoplePresent: _model.invitedPeople,
                         dateTime: DateTime.now(),
                       ));
                     },
