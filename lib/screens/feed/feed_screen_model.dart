@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/locator.dart';
-import 'package:serendipity/models/models.dart';
-import 'package:serendipity/services/places.dart';
+
+import '../../locator.dart';
+import '../../models/models.dart';
+import '../../services/places.dart';
 
 class FeedScreenModel extends ChangeNotifier {
   PlacesService _placesService;

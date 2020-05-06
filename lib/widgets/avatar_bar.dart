@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/data/avatars.dart';
+
+import '../data/avatars.dart';
 
 /// A row of avatars, representing the users associated
 /// with a specific [Post], or completed activity.

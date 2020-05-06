@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'package:serendipity/services/places.dart';
+import '../../services/places.dart';
 
 /// A photo of a [Place], represented by its unique Places photo reference.
 class PlacesPhoto extends Equatable {

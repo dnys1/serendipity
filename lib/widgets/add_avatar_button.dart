@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/data/avatars.dart';
+
+import '../data/avatars.dart';
 
 /// A plus (+) button which shows a [BottomSheet] for selecting
 /// an avatar. The widget takes a callback to call when an

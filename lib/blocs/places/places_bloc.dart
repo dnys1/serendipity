@@ -4,9 +4,9 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:serendipity/locator.dart';
-import 'package:serendipity/services/places.dart';
 
+import '../../locator.dart';
+import '../../services/places.dart';
 import '../../models/models.dart';
 
 part 'places_event.dart';

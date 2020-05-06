@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:serendipity/models/models.dart';
-import 'package:serendipity/widgets/widgets.dart';
 
+import '../../models/models.dart';
+import '../../widgets/widgets.dart';
 import 'feed_screen_model.dart';
 
 /// The main screen for displaying the scrollable feed.

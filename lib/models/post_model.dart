@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:serendipity/data/avatars.dart';
 import 'package:flutter/material.dart';
 
+import '../data/avatars.dart';
 import 'models.dart';
 
 class PostModel {

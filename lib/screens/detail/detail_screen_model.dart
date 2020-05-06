@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/locator.dart';
-import 'package:serendipity/models/models.dart';
-import 'package:serendipity/screens/feed/feed_screen_model.dart';
-import 'package:serendipity/services/places.dart';
+
+import '../../locator.dart';
+import '../../models/models.dart';
+import '../../screens/feed/feed_screen_model.dart';
+import '../../services/places.dart';
 
 /// The view model for [DetailScreen].
 class DetailScreenModel extends ChangeNotifier {

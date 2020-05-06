@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:serendipity/blocs/places/places_bloc.dart';
-import 'package:serendipity/data/avatars.dart';
-import 'package:serendipity/models/models.dart';
-import 'package:serendipity/widgets/add_avatar_button.dart';
-import 'package:serendipity/widgets/widgets.dart';
 
+import '../../blocs/places/places_bloc.dart';
+import '../../data/avatars.dart';
+import '../../models/models.dart';
+import '../../widgets/add_avatar_button.dart';
+import '../../widgets/widgets.dart';
 import 'add_screen_model.dart';
 
 class AddScreen extends StatelessWidget {

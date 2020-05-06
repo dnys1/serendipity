@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
-import 'package:serendipity/services/location.dart';
-import 'package:serendipity/data/activities.dart';
 
+import '../services/location.dart';
+import '../data/activities.dart';
 import '../locator.dart';
 import '../models/models.dart';
 

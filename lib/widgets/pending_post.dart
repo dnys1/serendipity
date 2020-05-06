@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/models/models.dart';
+
+import '../models/models.dart';
 
 /// A user's activity which has not been completed.
 class PendingPost extends StatelessWidget {
