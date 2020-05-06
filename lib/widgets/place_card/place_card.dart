@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../models/models.dart';
+import '../../models/models.dart';
 
 /// A card representing a [Place], for use in [AddScreen] when
 /// showing a user the selected [Place].

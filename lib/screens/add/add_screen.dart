@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../blocs/places/places_bloc.dart';
 import '../../data/avatars.dart';
 import '../../models/models.dart';
-import '../../widgets/add_avatar_button.dart';
 import '../../widgets/widgets.dart';
 import 'add_screen_model.dart';
 
