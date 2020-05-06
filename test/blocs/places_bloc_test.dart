@@ -27,7 +27,7 @@ void main() {
         when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenAnswer((_) async => [testPlace]);
-        return PlacesBloc(placesAPI: mockAPI);
+        return PlacesBloc(placesService: mockAPI);
       },
       act: (bloc) =>
           bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any)),
@@ -43,7 +43,7 @@ void main() {
         when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenThrow(PlacesException('Error'));
-        return PlacesBloc(placesAPI: mockAPI);
+        return PlacesBloc(placesService: mockAPI);
       },
       act: (bloc) =>
           bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any)),
@@ -61,7 +61,7 @@ void main() {
         when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenAnswer((_) async => [testPlace]);
-        return PlacesBloc(placesAPI: mockAPI);
+        return PlacesBloc(placesService: mockAPI);
       },
       act: (bloc) async {
         bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any));
@@ -80,7 +80,7 @@ void main() {
         when(mockAPI.retrievePlacesForMoodAndType(
                 mood: anyNamed('mood'), finType: anyNamed('finType')))
             .thenThrow(PlacesException('Error'));
-        return PlacesBloc(placesAPI: mockAPI);
+        return PlacesBloc(placesService: mockAPI);
       },
       act: (bloc) async {
         bloc.add(PlacesRequested(mood: Mood.Any, finType: FinType.Any));

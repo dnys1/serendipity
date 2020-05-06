@@ -19,7 +19,7 @@ class SerendipityApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PlacesBloc>(
-      create: (_) => PlacesBloc(placesAPI: PlacesService()),
+      create: (_) => PlacesBloc(),
       child: MaterialApp(
         title: 'Serendipity',
         theme: ThemeData(

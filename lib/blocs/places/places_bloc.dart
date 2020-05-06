@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:serendipity/locator.dart';
 import 'package:serendipity/services/places.dart';
 
 import '../../models/models.dart';
@@ -12,11 +13,12 @@ part 'places_event.dart';
 part 'places_state.dart';
 
 class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
-  final PlacesService placesAPI;
+  final PlacesService _placesService;
 
   PlacesBloc({
-    @required this.placesAPI,
-  }) : assert(placesAPI != null, 'API reference cannot be null');
+    PlacesService placesService,
+  })  : assert(placesService != null, 'API reference cannot be null'),
+        _placesService = placesService ?? locator<PlacesService>();
 
   @override
   PlacesState get initialState => PlacesInitial();
@@ -41,7 +43,7 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   }) async* {
     yield PlacesRequestInProgress();
     try {
-      List<Place> places = await placesAPI.retrievePlacesForMoodAndType(
+      List<Place> places = await _placesService.retrievePlacesForMoodAndType(
           mood: mood, finType: finType);
 
       Place randomPlace = places.elementAt(Random().nextInt(places.length));
