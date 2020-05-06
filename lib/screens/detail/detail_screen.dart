@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/api/places.dart';
+import 'package:serendipity/services/places.dart';
 import 'package:serendipity/models/models.dart';
 import 'package:serendipity/widgets/widgets.dart';
 
@@ -95,7 +95,7 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: FutureBuilder<List<PlacesPhoto>>(
-              future: PlacesAPI().getAllPhotosForPlace(widget.post.place),
+              future: PlacesService().getAllPhotosForPlace(widget.post.place),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import 'package:serendipity/api/places.dart';
+import 'package:serendipity/services/places.dart';
 
 /// A photo of a [Place], represented by its unique Places photo reference.
 class PlacesPhoto extends Equatable {
@@ -26,13 +26,13 @@ class PlacesPhoto extends Equatable {
   List<Object> get props => [id, maxHeight, maxWidth];
 
   /// Request a URL for this photo given a certain height, in pixels.
-  String getRequestUrlForHeight(int height) => PlacesAPI.createPhotoRequestUrl(
+  String getRequestUrlForHeight(int height) => PlacesService.createPhotoRequestUrl(
         photoReference: id,
         height: min(maxHeight, height),
       );
 
   /// Request a URL for this photo given a certain width, in pixels.
-  String getRequestUrlForWidth(int width) => PlacesAPI.createPhotoRequestUrl(
+  String getRequestUrlForWidth(int width) => PlacesService.createPhotoRequestUrl(
         photoReference: id,
         width: min(maxWidth, width),
       );

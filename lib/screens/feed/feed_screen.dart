@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/api/places.dart';
+import 'package:serendipity/services/places.dart';
 import 'package:serendipity/models/models.dart';
 import 'package:serendipity/screens/add/add_screen.dart';
 import 'package:serendipity/widgets/widgets.dart';
@@ -14,15 +14,10 @@ class _FeedScreenState extends State<FeedScreen> {
   List<Widget> _feed = [];
   PendingPost _pendingPost;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<bool> _getRandomFeed() async {
     while (_feed.length < 50) {
       // Generate a clickable post for a bunch of random places.
-      _feed.addAll((await PlacesAPI()
+      _feed.addAll((await PlacesService()
               .retrievePlacesForMoodAndType(mood: Mood.Any, finType: FinType.Any))
           .where((Place place) => place.photoReferences.isNotEmpty)
           .map((Place place) => Post(place: place)));

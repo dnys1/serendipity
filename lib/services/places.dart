@@ -1,21 +1,21 @@
 import 'dart:convert';
 
-import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
-import 'package:serendipity/api/places_exception.dart';
+import 'package:serendipity/services/location.dart';
 import 'package:serendipity/data/activities.dart';
 
+import '../locator.dart';
 import '../models/models.dart';
 
 /// The repository for interacting with the Google Places API, which is used to
 /// select random destinations based on a user's choice of mood and financial type.
-class PlacesAPI {
-  static final PlacesAPI _singleton = PlacesAPI._();
+class PlacesService {
+  LocationService _locationService;
 
-  factory PlacesAPI() => _singleton;
-
-  PlacesAPI._();
+  PlacesService({
+    LocationService locationService,
+  }) : _locationService = locationService ?? locator<LocationService>();
 
   /// API Key for querying the Places API
   static const String API_KEY = 'AIzaSyDqSyWnhK-2u4XbN9zYOYaJDlfO1DUolKs';
@@ -34,9 +34,6 @@ class PlacesAPI {
   /// The base url for a Places API photo request
   static const String photoRequestUrl =
       'https://maps.googleapis.com/maps/api/place/photo?';
-
-  /// The user's current latitude and longitude.
-  Location _userLocation;
 
   /// Creates the Places API search request URL starting with `searchUrl`.
   static String createRequestUrl({
@@ -113,19 +110,17 @@ class PlacesAPI {
       finType: finType,
     );
 
-    // Get the user's location (only once)
-    if (_userLocation == null) {
-      Position position = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
-        locationPermissionLevel: GeolocationPermission.locationWhenInUse,
-      );
-      _userLocation = Location(position.latitude, position.longitude);
+    // Get the user's location
+    final Location userLocation = await _locationService.getUserLocation();
+
+    if (userLocation == null) {
+      throw PlacesException('Unable to get user location.');
     }
 
     // Generate and send the Places API request
-    String requestUrl = PlacesAPI.createRequestUrl(
+    String requestUrl = PlacesService.createRequestUrl(
       keyword: randomActivity.searchTerm,
-      location: _userLocation,
+      location: userLocation,
     );
 
     final http.Response resp = await http.get(requestUrl);

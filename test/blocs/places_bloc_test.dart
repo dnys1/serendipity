@@ -1,12 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:serendipity/api/places.dart';
-import 'package:serendipity/api/places_exception.dart';
+import 'package:serendipity/services/places.dart';
 import 'package:serendipity/blocs/places/places_bloc.dart';
 import 'package:serendipity/models/models.dart';
 
-class MockAPI extends Mock implements PlacesAPI {}
+class MockAPI extends Mock implements PlacesService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

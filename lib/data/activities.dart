@@ -1,8 +1,7 @@
 import 'dart:math';
 
 import 'package:meta/meta.dart';
-
-import '../models/models.dart';
+import 'package:serendipity/models/models.dart';
 
 /// Mock activities for demo-ing the Serendipity concept.
 class MockActivities {
