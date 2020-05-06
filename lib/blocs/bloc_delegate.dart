@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 
+/// A simple BLoC delegate for printing the stream of events and transitions to the console.
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {

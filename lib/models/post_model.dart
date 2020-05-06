@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../data/avatars.dart';
 import 'models.dart';
 
+/// Represents a [Post] in the Feed.
 class PostModel {
   /// Whether or not the user owns this post.
   final bool userOwns;

@@ -4,7 +4,9 @@ import '../../locator.dart';
 import '../../models/models.dart';
 import '../../services/places.dart';
 
+/// The view model for [FeedScreen].
 class FeedScreenModel extends ChangeNotifier {
+  /// The [PlacesService], to generate a random feed.
   PlacesService _placesService;
 
   FeedScreenModel({
@@ -25,6 +27,7 @@ class FeedScreenModel extends ChangeNotifier {
       _feed.shuffle();
     }
 
+    // Triggers `snapshot.hasData` in FutureBuilder.
     return true;
   }
 

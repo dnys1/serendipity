@@ -12,6 +12,7 @@ import '../../models/models.dart';
 part 'places_event.dart';
 part 'places_state.dart';
 
+/// Ferries requests to [PlacesService] and returns results from API calls.
 class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   final PlacesService _placesService;
 
