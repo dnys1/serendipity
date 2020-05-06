@@ -68,7 +68,15 @@ class _FeedScreenState extends State<FeedScreen> {
                   ))),
             );
           } else if (snapshot.hasError) {
-            child = Text(snapshot.error);
+            child = Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'Error loading feed. Please try again.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
           } else {
             child = CircularProgressIndicator();
           }
