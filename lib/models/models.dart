@@ -2,6 +2,7 @@ export 'activity.dart';
 export 'fintype.dart';
 export 'mood.dart';
 export 'location.dart';
+export 'post_model.dart';
 
 export 'places/place.dart';
 export 'places/places_response.dart';

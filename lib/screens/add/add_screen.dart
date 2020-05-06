@@ -14,7 +14,10 @@ class AddScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AddScreenModel>(
       create: (_) => AddScreenModel(),
-      child: _AddScreenView(),
+      child: BlocProvider<PlacesBloc>(
+        create: (_) => PlacesBloc(),
+        child: _AddScreenView(),
+      ),
     );
   }
 }
@@ -27,11 +30,6 @@ class _AddScreenView extends StatefulWidget {
 
 class _AddScreenViewState extends State<_AddScreenView> {
   AddScreenModel _model;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -209,7 +207,7 @@ class _AddScreenViewState extends State<_AddScreenView> {
                   ? null
                   : () {
                       BlocProvider.of<PlacesBloc>(context).add(PlacesCleared());
-                      Navigator.of(context).pop(Post(
+                      Navigator.of(context).pop(PostModel(
                         place: _model.currPlace,
                         userOwns: true,
                         peoplePresent: _model.invitedPeople,

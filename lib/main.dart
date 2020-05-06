@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:serendipity/services/places.dart';
-import 'package:serendipity/blocs/bloc_delegate.dart';
-import 'package:serendipity/screens/screens.dart';
+import 'package:provider/provider.dart';
 
-import 'blocs/places/places_bloc.dart';
 import 'locator.dart';
+import 'routes.dart';
+import 'blocs/bloc_delegate.dart';
+import 'screens/feed/feed_screen_model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,14 +18,15 @@ void main() {
 class SerendipityApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PlacesBloc>(
-      create: (_) => PlacesBloc(),
+    return ChangeNotifierProvider<FeedScreenModel>(
+      create: (_) => FeedScreenModel(),
       child: MaterialApp(
         title: 'Serendipity',
         theme: ThemeData(
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: FeedScreen(),
+        initialRoute: '/',
+        onGenerateRoute: Routes.onGenerateRoute,
       ),
     );
   }

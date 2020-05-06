@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/services/places.dart';
+import 'package:provider/provider.dart';
 import 'package:serendipity/models/models.dart';
-import 'package:serendipity/screens/add/add_screen.dart';
 import 'package:serendipity/widgets/widgets.dart';
+
+import 'feed_screen_model.dart';
 
 /// The main screen for displaying the scrollable feed.
 class FeedScreen extends StatefulWidget {
@@ -11,25 +12,16 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  List<Widget> _feed = [];
-  PendingPost _pendingPost;
+  FeedScreenModel _model;
 
-  Future<bool> _getRandomFeed() async {
-    while (_feed.length < 50) {
-      // Generate a clickable post for a bunch of random places.
-      _feed.addAll((await PlacesService()
-              .retrievePlacesForMoodAndType(mood: Mood.Any, finType: FinType.Any))
-          .where((Place place) => place.photoReferences.isNotEmpty)
-          .map((Place place) => Post(place: place)));
-      _feed.shuffle();
-    }
-
-    // Must return something to trigger `snapshot.data` in FutureBuilder
-    return true;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _model = Provider.of<FeedScreenModel>(context);
   }
 
   Future<void> _clearPendingPost() async {
-    if (_pendingPost != null) {
+    if (_model.pendingPost != null) {
       return showDialog(
         context: context,
         child: AlertDialog(
@@ -39,21 +31,10 @@ class _FeedScreenState extends State<FeedScreen> {
         ),
       );
     }
-    Post pendingPost = await Navigator.of(context).push(MaterialPageRoute<Post>(
-      builder: (_) => AddScreen(),
-    ));
-    if (pendingPost == null) {
-      return;
+    PostModel pendingPost = await Navigator.of(context).pushNamed('/add');
+    if (pendingPost != null) {
+      _model.setPendingPost(pendingPost);
     }
-    setState(() {
-      _pendingPost = PendingPost(
-        place: pendingPost.place,
-        onComplete: () => setState(() {
-          _feed.insert(0, pendingPost);
-          _pendingPost = null;
-        }),
-      );
-    });
   }
 
   @override
@@ -69,18 +50,22 @@ class _FeedScreenState extends State<FeedScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: _getRandomFeed(),
+        future: _model.loadFeed(),
         builder: (context, snapshot) {
           Widget child;
           if (snapshot.hasData) {
             child = ListView(
               addAutomaticKeepAlives: true,
-              children:
-                  (_pendingPost == null ? <Widget>[] : <Widget>[_pendingPost])
-                    ..addAll(_feed.map((post) => Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: post,
-                        ))),
+              children: [
+                if (_model.pendingPost != null)
+                  PendingPost(
+                    place: _model.pendingPost.place,
+                    onComplete: _model.completePendingPost,
+                  )
+              ]..addAll(_model.feed.map((post) => Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Post(post),
+                  ))),
             );
           } else if (snapshot.hasError) {
             child = Text(snapshot.error);

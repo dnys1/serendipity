@@ -1,19 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:serendipity/services/places.dart';
+import 'package:provider/provider.dart';
 import 'package:serendipity/models/models.dart';
+import 'package:serendipity/screens/feed/feed_screen_model.dart';
 import 'package:serendipity/widgets/widgets.dart';
 
-class DetailScreen extends StatefulWidget {
-  final Post post;
+import 'detail_screen_model.dart';
+
+class DetailScreen extends StatelessWidget {
+  final PostModel post;
 
   const DetailScreen(this.post);
 
   @override
-  _DetailScreenState createState() => _DetailScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<DetailScreenModel>(
+      create: (_) => DetailScreenModel(
+        post,
+        feedScreenModel: Provider.of<FeedScreenModel>(context, listen: false),
+      ),
+      child: _DetailScreenView(),
+    );
+  }
 }
 
-class _DetailScreenState extends State<DetailScreen> {
-  bool _isEditing = false;
+class _DetailScreenView extends StatefulWidget {
+  const _DetailScreenView();
+
+  @override
+  _DetailScreenViewState createState() => _DetailScreenViewState();
+}
+
+class _DetailScreenViewState extends State<_DetailScreenView> {
+  DetailScreenModel _model;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _model = Provider.of<DetailScreenModel>(context);
+  }
 
   /// The bottom scrolling avatar bar
   Widget get _avatarBar => SingleChildScrollView(
@@ -21,18 +45,14 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Row(
           children: <Widget>[
             AvatarBar(
-              avatarIndices: widget.post.peoplePresent,
+              avatarIndices: _model.post.peoplePresent,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               radius: 30,
             ),
             SizedBox(width: 5),
-            if (_isEditing)
+            if (_model.isEditing)
               AddAvatarButton(
-                onSelect: (int selected) {
-                  setState(() {
-                    widget.post.peoplePresent.add(selected);
-                  });
-                },
+                onSelect: _model.addPersonPresent,
               ),
           ],
         ),
@@ -42,7 +62,7 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget get _activityDetails => Expanded(
         child: Column(
           children: <Widget>[
-            Text(widget.post.place.name,
+            Text(_model.post.place.name,
                 style: Theme.of(context).textTheme.headline5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +70,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 SizedBox(width: 5),
                 Icon(Icons.star, color: Colors.amber, size: 20),
                 SizedBox(width: 5),
-                Text('${widget.post.place.rating} / 5'),
+                Text('${_model.post.place.rating} / 5'),
               ],
             ),
             SizedBox(height: 20),
@@ -81,12 +101,12 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.post.dateTime.toString().split(' ')[0]),
-        actions: widget.post.userOwns
+        title: Text(_model.post.dateTime.toString().split(' ')[0]),
+        actions: _model.post.userOwns
             ? <Widget>[
                 IconButton(
-                  icon: Icon(_isEditing ? Icons.check : Icons.edit),
-                  onPressed: () => setState(() => _isEditing = !_isEditing),
+                  icon: Icon(_model.isEditing ? Icons.check : Icons.edit),
+                  onPressed: () => _model.setIsEditing(!_model.isEditing),
                 )
               ]
             : null,
@@ -95,7 +115,7 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: FutureBuilder<List<PlacesPhoto>>(
-              future: PlacesService().getAllPhotosForPlace(widget.post.place),
+              future: _model.loadPhotos(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(
